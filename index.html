@@ -3,15 +3,114 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@200&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="main-container">
+        <div class="header-div">
+            <h1 class="title">Rock &nbsp;&nbsp;Paper &nbsp;&nbsp;Scissors</h1>
+        </div>
+        <div class="interface-div">
+            <div class="chooseWeapon">
+                <div class="chooseWeaponText">Choose Your Weapon</div>
+            </div>    
+            <div class="buttons-div">
+                <button class="rockButton weaponButton" id="rock-button"></button>
+                <button class="paperButton weaponButton" id="paper-button"></button>
+                <button class="scissorsButton weaponButton" id="scissors-button"></button>
+            </div>    
+            <div class="results">
+                <div class="resultsText">First to Five Points Wins</div>
+            </div>
+            <div class="runningScore">
+                <div class="playerDiv">
+                    <div class="nameText">Player</div>
+                    <div class="pSelectionDisplay"></div>
+                    <div class="playerScoreCount">Score: 0</div>
+                </div>
+                <div class="computerDiv">
+                    <div class="nameText">Computer</div>
+                    <div class="cSelectionDisplay"></div>
+                    <div class="computerScoreCount">Score: 0</div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>    
+    <div id="simpleModal" class="modal">
+        <div class="modal-content">
+            <div class="modalTextContainer">
+                <p class="modalText"></p>
+            </div>
+            <div class="modalBtnContainer">
+                <button class="tryAgainBtn">Try Again</button>
+            <div>
+        </div>
+    </div>
+
+
     <script>
+        const rButton = document.querySelector('.rockButton');
+        const pButton = document.querySelector('.paperButton');
+        const sButton = document.querySelector('.scissorsButton');
+        const resultDiv = document.querySelector('.resultsText');
+        const playerScoreCount = document.querySelector('.playerScoreCount');
+        const computerScoreCount = document.querySelector('.computerScoreCount');
+        const weaponButtons = document.querySelector('.weaponButton');
+        const pSelectionImage = document.querySelector('.pSelectionDisplay');
+        const cSelectionImage = document.querySelector('.cSelectionDisplay');
+        const modal = document.querySelector('.modal');
+        const resetBtn = document.querySelector('.tryAgainBtn');
+        const modalText = document.querySelector('.modalText');
+
 
         const gameArray = ['rock', 'paper', 'scissors'];
         let playerSelection = '';
         let computerSelection = '';
         let playerScore = 0;
         let computerScore = 0;
+        let round = 1;
+
+
+
+        //this function determines the winner and disables buttons
+        function scoreCounter() {
+            if (playerScore == 5) {
+                modalText.textContent = 'You Won!';
+                openModal();
+                document.getElementById('rock-button').disabled = true;
+                document.getElementById('paper-button').disabled = true;
+                document.getElementById('scissors-button').disabled = true;
+            } else if (computerScore == 5) {
+                modalText.textContent = 'You Lost...';
+                openModal();
+                document.getElementById('rock-button').disabled = true;
+                document.getElementById('paper-button').disabled = true;
+                document.getElementById('scissors-button').disabled = true;
+            } 
+        }
+
+        //this function resets the game
+        function resetGame() {
+            modal.style.display = 'none';
+            playerScore = 0;
+            computerScore = 0;
+            resultDiv.textContent = 'First to Five Points Wins';
+            playerScoreCount.textContent = 'Score: 0';
+            computerScoreCount.textContent = 'Score: 0';
+            pSelectionImage.style.cssText = 'background-image: none';
+            cSelectionImage.style.cssText = 'background-image: none';
+            document.getElementById('rock-button').disabled = false;
+            document.getElementById('paper-button').disabled = false;
+            document.getElementById('scissors-button').disabled = false;
+        }
+
+        //this function opens the modal
+        function openModal() {
+            modal.style.display = 'block';
+        }
 
         //this function selects a random string from gameArray
         function computerPlay() {
@@ -19,95 +118,102 @@
             computerSelection = gameArray[item];
         }
 
-        //this function compares selections and determines the winner 
+        //this function compares selections and determines the round winner 
         function playRound(playerSelection, computerSelection) {
-           playerSelection = playerSelection.toLowerCase();
-           switch (true) {
-               case playerSelection == 'rock' && computerSelection == 'scissors':
-                   console.log('Rock beats scissors, player wins round.');
-                   return ++playerScore;
-                   break;
-               case playerSelection == 'paper' && computerSelection == 'rock':
-                   console.log('Paper beats rock, player wins round.')
-                   return ++playerScore;
-                   break;
-               case playerSelection == 'scissors' && computerSelection == 'paper':
-                   console.log('Scissors beats paper, player wins round.');
-                   return ++playerScore;
-                   break;
-               case playerSelection == 'scissors' && computerSelection == 'rock':
-                   console.log('Rock beats scissors, computer wins round.')
-                   return ++computerScore;
-                   break;
-               case playerSelection == 'rock' && computerSelection == 'paper':
-                   console.log('Paper beats rock, computer wins round.');
-                   return  ++computerScore;
-                   break;
-               case playerSelection == 'paper' && computerSelection == 'scissors':
-                   console.log('Scissors beats paper, computer wins round.') 
-                   return ++computerScore;
-                   break;
-               default: 
-                    console.log('It\'s a tie');
+            playerSelection = playerSelection.toLowerCase();
+            switch (true) {
+                case playerSelection == 'rock' && computerSelection == 'scissors':
+                    resultDiv.textContent = 'Rock beats scissors, player wins round.';
+                    ++playerScore;
+                    break;                   
+                case playerSelection == 'paper' && computerSelection == 'rock':
+                    resultDiv.textContent = 'Paper beats rock, player wins round.';
+                    ++playerScore;
+                    break;
+                case playerSelection == 'scissors' && computerSelection == 'paper':
+                    resultDiv.textContent = 'Scissors beats paper, player wins round.';
+                    ++playerScore;
+                    break;
+                case playerSelection == 'scissors' && computerSelection == 'rock':
+                    resultDiv.textContent = 'Rock beats scissors, computer wins round.';
+                    ++computerScore;
+                    break;
+                case playerSelection == 'rock' && computerSelection == 'paper':
+                    resultDiv.textContent = 'Paper beats rock, computer wins round.';
+                    ++computerScore;
+                    break;
+                case playerSelection == 'paper' && computerSelection == 'scissors':
+                    resultDiv.textContent = 'Scissors beats paper, computer wins round.'; 
+                    ++computerScore;
+                    break;
+                default: 
+                    resultDiv.textContent = 'It\'s a tie';
            }
+           playerScoreCount.textContent = `Score: ${playerScore}`;
+           computerScoreCount.textContent = `Score: ${computerScore}`;
+           scoreCounter();
         }
-
-        function game() {
-            playerSelection = prompt('rock, paper or scissors?');
-            computerPlay();
-            playRound(playerSelection, computerSelection);
-            console.log(playerSelection);
-            console.log(computerSelection);
-            console.log('player score: ' + playerScore);
-            console.log('computer score: ' + computerScore);
-
-            playerSelection = prompt('rock, paper or scissors?');
-            computerPlay();
-            playRound(playerSelection, computerSelection);
-            console.log(playerSelection);
-            console.log(computerSelection);
-            console.log('player score: ' + playerScore);
-            console.log('computer score: ' + computerScore);
-
-            playerSelection = prompt('rock, paper or scissors?');
-            computerPlay();
-            playRound(playerSelection, computerSelection);
-            console.log(playerSelection);
-            console.log(computerSelection);
-            console.log('player score: ' + playerScore);
-            console.log('computer score: ' + computerScore);
-
-            playerSelection = prompt('rock, paper or scissors?');
-            computerPlay();
-            playRound(playerSelection, computerSelection);
-            console.log(playerSelection);
-            console.log(computerSelection);
-            console.log('player score: ' + playerScore);
-            console.log('computer score: ' + computerScore);
-
-            playerSelection = prompt('rock, paper or scissors?');
-            computerPlay();
-            playRound(playerSelection, computerSelection);
-            console.log(playerSelection);
-            console.log(computerSelection);
-            console.log('player score: ' + playerScore);
-            console.log('computer score: ' + computerScore);
-
-            if (playerScore > computerScore) {
-                return 'You win!';
-            } else if (computerScore > playerScore) {
-                return 'You lose!';
-            } else {
-                return 'It\'s a tie!';
-            }
-
-        }
-
-
-        console.log(game());
         
+        //buttons
 
+        function buttonAnimation(weapon) {
+            weapon.classList.add('btnAnimation');
 
+            setTimeout(function() {
+                weapon.classList.remove('btnAnimation');
+            }, 400);
+        }
+
+        rButton.addEventListener('click',() => {
+            buttonAnimation(rButton);
+            playerSelection = 'rock';
+            computerSelection = '';
+            computerPlay();
+            pSelectionImage.style.cssText = 'background-image: url(rock.jpeg); background-size: 100%;';
+            if (computerSelection == 'rock') {
+                cSelectionImage.style.cssText = 'background-image: url(rock.jpeg); background-size: 100%;';
+            } else if (computerSelection == 'paper') {
+                cSelectionImage.style.cssText = 'background-image: url(paper.jpeg); background-size: 100%;';
+            } else if (computerSelection == 'scissors') {
+                cSelectionImage.style.cssText = 'background-image: url(scissors.jpeg); background-size: 100%;';
+            }
+            playRound(playerSelection, computerSelection);
+        });
+
+        pButton.addEventListener('click', () => {
+            buttonAnimation(pButton)
+            playerSelection = 'paper';
+            computerSelection = '';
+            computerPlay();
+            pSelectionImage.style.cssText = 'background-image: url(paper.jpeg); background-size: 100%;';
+            if (computerSelection == 'rock') {
+                cSelectionImage.style.cssText = 'background-image: url(rock.jpeg); background-size: 100%;';
+            } else if (computerSelection == 'paper') {
+                cSelectionImage.style.cssText = 'background-image: url(paper.jpeg); background-size: 100%;';
+            } else if (computerSelection == 'scissors') {
+                cSelectionImage.style.cssText = 'background-image: url(scissors.jpeg); background-size: 100%;';
+            }
+            playRound(playerSelection, computerSelection);
+        });
+
+        sButton.addEventListener('click', () => {
+            buttonAnimation(sButton)
+            playerSelection = 'scissors';
+            computerSelection = '';
+            computerPlay();
+            pSelectionImage.style.cssText = 'background-image: url(scissors.jpeg); background-size: 100%;';
+            if (computerSelection == 'rock') {
+                cSelectionImage.style.cssText = 'background-image: url(rock.jpeg); background-size: 100%;';
+            } else if (computerSelection == 'paper') {
+                cSelectionImage.style.cssText = 'background-image: url(paper.jpeg); background-size: 100%;';
+            } else if (computerSelection == 'scissors') {
+                cSelectionImage.style.cssText = 'background-image: url(scissors.jpeg); background-size: 100%;';
+            }
+            playRound(playerSelection, computerSelection);
+        })
+
+        resetBtn.addEventListener('click', resetGame);
+        
     </script>
 </body>
 </html>
